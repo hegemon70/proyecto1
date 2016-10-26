@@ -1,41 +1,54 @@
-body{
-	/*background-color: yellow;*/
+/*body{
+		background-color: yellow;
 
-}
+}*/
+/*img{
+	width:40;
+}*/
 .cajaLinea{
-	width: 100%;
-	/*border-style: solid;*/
-	height:50;
-	float:left;
-	/*clear;*/
+	width: 60%;
+	border-style: solid;
+	/*height:50;*/
+	/*float:left;*/
+	
 }
 .lineaI{
-		/*position:absolute;*/
-		/*display:inline;*/
-		float:left;
 		width:10%;
-		height:50;
+		display:inline;
+		/*float:left;*/
+		/*position:absolute;*/
+		/*height:50;*/
 		/*border-style: solid;*/
-		border-color: green;
+		/*border-color: green;
 
 		/*background-color: red;*/
 }
+
 .lineaC{
-		/*display:inline;*/
-		/*position:absolute;*/
-		float:left;
 		width:68%;
-		height:50;
+		display:inline;
+		/*float:left;*/
+		/*position:absolute;*/
+		/*height:50;*/
 		/*border-style: solid;*/
-		border-color: blue;
+		/*border-color: blue;*/
 }
 .lineaR{
-		/*position:absolute;*/
-		/*display:inline;*/
-		float:right;
 		width:20%;
-		height:50;
+		display:inline;
+		/*float:right;*/
+		/*position:absolute;*/
+		/*height:50;*/
 		/*border-style: solid;*/
-		border-color: red;
+		/*border-color: red;*/
 		/*background-color: green;*/
+}
+.imagenFlotante{
+	/*float:right;*/
+	height:100;
+	width:100;
+}
+.imagenNormal{
+	height:40;
+	width:40;	
 }

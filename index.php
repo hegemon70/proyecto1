@@ -1,6 +1,9 @@
 <?php 
 $pincel="";
 $tab=20;
+
+
+
  ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -33,6 +36,9 @@ $tab=20;
 				$centro='<div class="lineaC">';
 				$derecha='<div class="lineaR">';
 				//leemos el directorio
+				$toAmpliar=isset($_GET["amplia"])?$_GET["amplia"]:null;
+						
+						
 				while($elemento=readdir($dir))//mientra lea
 				{	
 					$len=strlen($elemento);	
@@ -43,10 +49,33 @@ $tab=20;
 						// 	echo $value;
 						// }
 						$cola=$trozos[count($trozos)-1];
+							//$ampliar=is_null($toAmpliar)?'class="imagenNormal"':' class="imagenFlotante"';
 							//$pincel.=$Maxlen.'|'.$len.'|'.($Maxlen-$len).'|'.''.'<br/>';
 							switch ($cola) 
 							{
 								case 'jpg':
+									if(!is_null($toAmpliar))//pulsado dibujo
+									{
+										// $ampliar=(($directorio.'/'.$elemento)==$toAmpliar)?' class="imagenNormal"':' class="imagenFlotante"';
+										if(($elemento)==$toAmpliar)//el dibujo pulsado coincide
+										{
+											$ampliar=' class="imagenFlotante"';
+											//$pincel.='<h1>'.$directorio.'/'.$elemento.'|'.$toAmpliar.'|'.$ampliar.'</h1>';
+										}
+										else //el dibujo pulsado no coincide
+										{
+											$ampliar=' class="imagenNormal"';
+											//$pincel.='<h3>'.$directorio.'/'.$elemento.'|'.$toAmpliar.'|'.$ampliar.'</h3>';
+										}	
+									}
+									else //sin pulsar dibujo
+									{
+										$ampliar=' class="imagenNormal"';
+										//$pincel.='<h2>'.$directorio.'/'.$elemento.'|'.$toAmpliar.'|'.$ampliar.'</h2>';
+										//$pincel.='<h1>sin pulsar</h1>';
+									}
+									$pintaIcono='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
+									$pincel.='<h1>'.$directorio.'/'.$elemento.'|'.$ampliar.'</h1>';
 									$pincel.='<div class="cajaLinea">';
 									$pincel.=$izquierda;
 									$pincel.='<img src="img/jpeg.png" height="40" length="40">';
@@ -55,9 +84,10 @@ $tab=20;
 									$pincel.=' - - '.$elemento;
 									$pincel.='</div>';
 									$pincel.=$derecha;
-									//$pincel.='<h1>'.$directorio.'/'.$elemento.'</h1>';
-									$pincel.='<a href="index.php?amplia="'.$directorio.'/'.$elemento.'">';
-									$pincel.='<img src="'.$directorio.'/'.$elemento.'" height="40">';
+									$pincel.='<a href="index.php?amplia='.$elemento.'">';
+									//$pincel.='<a href="index.php?amplia='.$directorio.'/'.$elemento.'">';
+									//$pincel.='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
+									$pincel.=$pintaIcono;
 									$pincel.='</a>';
 									$pincel.='</div>';
 									$pincel.='</div>';
@@ -71,8 +101,9 @@ $tab=20;
 									$pincel.=' - - '.$elemento;
 									$pincel.='</div>';
 									$pincel.=$derecha;
-									$pincel.='<img src="'.$directorio.'/'.$elemento.'" height="40">';
-									//$pincel.='</p>';
+									$pincel.='<a href="index.php?amplia='.$directorio.'/'.$elemento.'">';
+									$pincel.='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'">';
+									$pincel.='</a>';
 									$pincel.='</div>';
 									$pincel.='</div>';
 									break;
@@ -80,14 +111,14 @@ $tab=20;
 									$pincel.='<div  class="cajaLinea">';
 									$pincel.=$izquierda;
 									$pincel.='<img src="img/word.jpg" height="40" length="40">';
-									$pincel.='</div length="10%">';
+									$pincel.='</div>';
 									$pincel.=$centro;
 									$pincel.=' - - '.$elemento;
 									$pincel.='</div>';
-									$pincel.='<div length="20%">';
+									//$pincel.='<div length="20%">';
+									$pincel.=$derecha;
 									$pincel.='<a href="docs/'.$elemento.'">  descargar ';
 									$pincel.='</a>';
-									//$pincel.='</p>';
 									$pincel.='</div>';
 									$pincel.='</div>';
 									break;
