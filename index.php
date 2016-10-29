@@ -1,9 +1,6 @@
 <?php 
 $pincel="";
 $tab=20;
-
-
-
  ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -45,37 +42,27 @@ $tab=20;
 					if(is_file("$directorio/$elemento"))
 					{
 						$trozos=explode('.',$elemento);
-						// foreach ($trozos as $value) {
-						// 	echo $value;
-						// }
 						$cola=$trozos[count($trozos)-1];
-							//$ampliar=is_null($toAmpliar)?'class="imagenNormal"':' class="imagenFlotante"';
-							//$pincel.=$Maxlen.'|'.$len.'|'.($Maxlen-$len).'|'.''.'<br/>';
 							switch ($cola) 
 							{
 								case 'jpg':
 									if(!is_null($toAmpliar))//pulsado dibujo
 									{
-										// $ampliar=(($directorio.'/'.$elemento)==$toAmpliar)?' class="imagenNormal"':' class="imagenFlotante"';
 										if(($elemento)==$toAmpliar)//el dibujo pulsado coincide
 										{
-											$ampliar=' class="imagenFlotante"';
-											//$pincel.='<h1>'.$directorio.'/'.$elemento.'|'.$toAmpliar.'|'.$ampliar.'</h1>';
+											$ampliar='height="500" length="500"';
 										}
 										else //el dibujo pulsado no coincide
 										{
-											$ampliar=' class="imagenNormal"';
-											//$pincel.='<h3>'.$directorio.'/'.$elemento.'|'.$toAmpliar.'|'.$ampliar.'</h3>';
+											$ampliar='height="75" length="75"';
 										}	
 									}
 									else //sin pulsar dibujo
 									{
-										$ampliar=' class="imagenNormal"';
-										//$pincel.='<h2>'.$directorio.'/'.$elemento.'|'.$toAmpliar.'|'.$ampliar.'</h2>';
-										//$pincel.='<h1>sin pulsar</h1>';
+										$ampliar='height="75" length="75"';
 									}
 									$pintaIcono='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
-									$pincel.='<h1>'.$directorio.'/'.$elemento.'|'.$ampliar.'</h1>';
+									//$pincel.='<h1>'.$directorio.'/'.$elemento.'|'.$ampliar.'</h1>';
 									$pincel.='<div class="cajaLinea">';
 									$pincel.=$izquierda;
 									$pincel.='<img src="img/jpeg.png" height="40" length="40">';
@@ -93,6 +80,22 @@ $tab=20;
 									$pincel.='</div>';
 									break;
 								case 'png':
+									if(!is_null($toAmpliar))//pulsado dibujo
+									{
+										if(($elemento)==$toAmpliar)//el dibujo pulsado coincide
+										{
+											$ampliar='height="500" length="500"';
+										}
+										else //el dibujo pulsado no coincide
+										{
+											$ampliar='height="75" length="75"';
+										}	
+									}
+									else //sin pulsar dibujo
+									{
+										$ampliar='height="75" length="75"';
+									}
+									$pintaIcono='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
 									$pincel.='<div class="cajaLinea">';
 									$pincel.=$izquierda;
 									$pincel.='<img src="img/png.png" height="40" length="40">';
@@ -102,7 +105,8 @@ $tab=20;
 									$pincel.='</div>';
 									$pincel.=$derecha;
 									$pincel.='<a href="index.php?amplia='.$directorio.'/'.$elemento.'">';
-									$pincel.='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'">';
+									//$pincel.='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'">';
+									$pincel.=$pintaIcono;
 									$pincel.='</a>';
 									$pincel.='</div>';
 									$pincel.='</div>';
@@ -149,6 +153,6 @@ $tab=20;
 
 	</hr>
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
 </body>
 </html>
