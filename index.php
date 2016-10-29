@@ -9,7 +9,7 @@ $tab=20;
 	<title>proyecto1</title>
 </head>
 <body>
-<link rel="stylesheet" href="estilo.css">
+<link rel="stylesheet" href="estilo1.css">
 	<hr>
 		<?php 
 			$elemento="";
@@ -29,9 +29,10 @@ $tab=20;
 				}
 				$Maxlen+=$tab;
 				rewinddir();
-				$izquierda='<div class="lineaI">';
-				$centro='<div class="lineaC">';
-				$derecha='<div class="lineaR">';
+				//$izquierda='<div'.' class="lineaI"'.'>';
+				$izquierda=' class="lineaI" ';
+				$centro=' class="lineaC" ';
+				$derecha=' class="lineaR" ';
 				//leemos el directorio
 				$toAmpliar=isset($_GET["amplia"])?$_GET["amplia"]:null;
 						
@@ -64,13 +65,13 @@ $tab=20;
 									$pintaIcono='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
 									//$pincel.='<h1>'.$directorio.'/'.$elemento.'|'.$ampliar.'</h1>';
 									$pincel.='<div class="cajaLinea">';
-									$pincel.=$izquierda;
+									$pincel.='<div'.$izquierda.'>';
 									$pincel.='<img src="img/jpeg.png" height="40" length="40">';
 									$pincel.='</div>';
-									$pincel.=$centro;
+									$pincel.='<div'.$centro.'>';
 									$pincel.=' - - '.$elemento;
 									$pincel.='</div>';
-									$pincel.=$derecha;
+									$pincel.='<div'.$derecha.'>';
 									$pincel.='<a href="index.php?amplia='.$elemento.'">';
 									//$pincel.='<a href="index.php?amplia='.$directorio.'/'.$elemento.'">';
 									//$pincel.='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
@@ -97,13 +98,13 @@ $tab=20;
 									}
 									$pintaIcono='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
 									$pincel.='<div class="cajaLinea">';
-									$pincel.=$izquierda;
+									$pincel.='<div'.$izquierda.'>';
 									$pincel.='<img src="img/png.png" height="40" length="40">';
 									$pincel.='</div>';
-									$pincel.=$centro;
+									$pincel.='<div'.$centro.'>';
 									$pincel.=' - - '.$elemento;
 									$pincel.='</div>';
-									$pincel.=$derecha;
+									$pincel.='<div'.$derecha.'>';
 									$pincel.='<a href="index.php?amplia='.$directorio.'/'.$elemento.'">';
 									//$pincel.='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'">';
 									$pincel.=$pintaIcono;
@@ -113,14 +114,14 @@ $tab=20;
 									break;
 								case 'docx':
 									$pincel.='<div  class="cajaLinea">';
-									$pincel.=$izquierda;
+									$pincel.='<div'.$izquierda.'>';
 									$pincel.='<img src="img/word.jpg" height="40" length="40">';
 									$pincel.='</div>';
-									$pincel.=$centro;
+									$pincel.='<div'.$centro.'>';
 									$pincel.=' - - '.$elemento;
 									$pincel.='</div>';
 									//$pincel.='<div length="20%">';
-									$pincel.=$derecha;
+									$pincel.='<div'.$derecha.'>';
 									$pincel.='<a href="docs/'.$elemento.'">  descargar ';
 									$pincel.='</a>';
 									$pincel.='</div>';
@@ -128,13 +129,13 @@ $tab=20;
 									break;
 								case 'txt':
 									$pincel.='<div  class="cajaLinea">';
-									$pincel.=$izquierda;
+									$pincel.='<div'.$izquierda.'>';
 									$pincel.='<img src="img/txt.png" height="40" length="40">';
 									$pincel.='</div>';
-									$pincel.=$centro;
+									$pincel.='<div'.$centro.'>';
 									$pincel.=' - - '.$elemento;
 									$pincel.='</div>';
-									$pincel.=$derecha;
+									$pincel.='<div'.$derecha.'>';
 									$pincel.='<a href="docs/'.$elemento.'">  ver ';
 									$pincel.='</a>';
 									$pincel.='</div>';
