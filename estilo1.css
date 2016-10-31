@@ -48,3 +48,32 @@ table {
 }
 
 /*-------------fin reseteo-----------------*/
+.cajaLinea{
+	width: 60%;
+	height: 8em;
+	/*border-style: solid;
+	border-width: 0.1em;*/
+}
+.lineaL{
+		width:10%;
+		/*border-style: solid;
+		border-width: 0.1em;
+		border-color: red;*/
+		float: left;
+}
+.lineaC{
+		width:50%;
+		/*border-style: solid;
+		border-width: 0.1em;
+		border-color: blue;*/
+		float: left;
+}
+
+.lineaR{
+		width:30%;
+		/*border-style: solid;
+		border-width: 0.1em;
+		border-color: green;*/
+		float: right;
+}
+	
