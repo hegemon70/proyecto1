@@ -1,6 +1,7 @@
 <?php 
 $pincel="";
 $tab=20;
+$debug=true;
  ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -186,11 +187,18 @@ Directorio<input type="text" name="carpeta">
 <?php /*script de subir*/
 if (isset($_POST["subir"]))
 {	//echo $_FILES["imagen"]["name"].'<br>tenemos cargado el post de subir<br>';
-	echo $directorio;
-		echo '<br>'.$_FILES["imagen"]["name"];
-		echo '<br>'.$_FILES["imagen"]["size"];
-		echo '<br>'.$_FILES["imagen"]["type"];//tipo mime
-		echo '<br>'.$_FILES["imagen"]["tmp_name"];
+	if($debug){
+		$bc.=$directorio;
+		$bc.='<br>'.$_FILES["imagen"]["name"];
+		$bc.='<br>'.$_FILES["imagen"]["size"];
+		$bc.='<br>'.$_FILES["imagen"]["type"];//tipo mime
+		$bc.='<br>'.$_FILES["imagen"]["tmp_name"];
+		// echo $directorio;
+		// echo '<br>'.$_FILES["imagen"]["name"];
+		// echo '<br>'.$_FILES["imagen"]["size"];
+		// echo '<br>'.$_FILES["imagen"]["type"];//tipo mime
+		// echo '<br>'.$_FILES["imagen"]["tmp_name"];
+	}
 	if(is_uploaded_file($_FILES["imagen"]["tmp_name"])){
 	//si venimos de pulsar el boton subir
 	//nombre temporal con el que se sube el fichero
@@ -198,7 +206,11 @@ if (isset($_POST["subir"]))
 		$nombre=$_FILES["imagen"]["name"];	
 
 
-		if(($_FILES["imagen"]["type"]=="image/jpeg")||$_FILES["imagen"]["type"]=="image/png"){
+		//if(($_FILES["imagen"]["type"]=="image/jpeg")||$_FILES["imagen"]["type"]=="image/png"){
+			if(($_FILES["imagen"]["type"]=="image/jpeg")||
+				($_FILES["imagen"]["type"]=="image/png")||
+				($_FILES["imagen"]["type"]=="application/octet-stream")||
+				($_FILES["imagen"]["type"]=="text/plain")){
 				move_uploaded_file($_FILES["imagen"]["tmp_name"], $directorio.'/'.$nombre);//origen el temporal, destino un timestamp + el nombre del archivo 
 				//move_uploaded_file($_FILES["imagen"]["tmp_name"], "img/".$nombre);
 		}else{
