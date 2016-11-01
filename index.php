@@ -1,14 +1,16 @@
 <?php 
 $pincel="";
+$pincelDir="";
+$newDir="";
 $tab=20;
-$debug=true;
+$debug=false;
  ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
 	<meta charset="UTF-8">
 	<title>proyecto1</title>
-	
+
 	<?php /*script de lecturas*/
 			$elemento="";
 			$directorio="docs";
@@ -38,8 +40,22 @@ $debug=true;
 				while($elemento=readdir($dir))//mientra lea
 				{	
 					$len=strlen($elemento);	
+					// if(is_dir($directorio)){
+					// 	$pintaIcono='<img src="'.$directorio.'/'.$elemento.'>';
+					// 	$pincel.='<div class="cajaLinea">';
+					// 				//$pincel.='<div'.$izquierda.'>';
+					// 				$pincel.='<div class="lineaL">';
+					// 				$pincel.='<img src="img/directorio.png" height="40" length="40">';
+					// 				$pincel.='</div>';
+					// 				$pincel.='<div class="lineaC">';
+					// 				//$pincel.='<div'.$centro.'>';
+					// 				$pincel.=' - - '.$elemento;
+					// 				$pincel.='</div>';
+									
+					// 				$pincel.='</div>';
+					// }
 					if(is_file("$directorio/$elemento"))
-					{
+					{/*inicio is_file*/
 						$trozos=explode('.',$elemento);
 						$cola=$trozos[count($trozos)-1];
 							switch ($cola) 
@@ -77,9 +93,11 @@ $debug=true;
 									//$pincel.='<a href="index.php?amplia='.$directorio.'/'.$elemento.'">';
 									//$pincel.='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
 									$pincel.=$pintaIcono;
-
 									$pincel.='</a>';
-									$pincel.='es';
+									// $pincel.='es';
+									$pincel.='<a href="index.php?borrar='.$elemento.'">';//para borrar
+									$pincel.='<img src="img/delete.png"  height="10" >';
+									$pincel.='</a>';
 									$pincel.='</div>';
 									$pincel.='</div>';
 									break;
@@ -149,21 +167,76 @@ $debug=true;
 									$pincel.='</div>';
 									break;
 							}
-					}
+					}/*fin is_file  */
 				}
 			}
 
 			
 ?>
+<?php 
+if(isset($_GET["borrar"]))
+{
+	$borrar=$_GET["borrar"];
+	$ruta="img/$borrar";
+	if(is_file($ruta)){//si el fichero existe, 
+		if(!unlink($ruta)){//lo intenta BORRAR
+			echo "No se ha  podido borrar";//si falla muestra aviso
+		}
+	}
+}
+ ?>
+<?php 
+		/*script creacion directorio*/
+		if(isset($_POST["carpeta"]))
+		{
+				$newDir=$_POST["carpeta"];
+				if(strlen($newDir)==0)
+				{
+					$pincelDir.="directorioVacio";
+				}
+				else
+				{
+					// try {
+						$path=$directorio.'/'.$newDir;
+						if($debug)
+							echo '<h2>'.$path.'</h2>';
 
+						if(mkdir($path))
+						{
+								$pincelDir.="directorioCreado: ".$directorio.'/'.$newDir;;
+						}
+						else
+						{
+								$pincelDir.="creacion directorio fallida ";
+						}
+					// } catch (e_warning $e) {
+					// 	echo 'aviso directorio ya creado';
+					// }
+					//$pincelDir.=$directorio.'/'.$newDir;
+					
+				}
+
+		}
+		else
+		{
+			$pincelDir.="no esta establecido el CreaDir";
+		}
+	 ?>
 </head>
 <body>
+
 <link rel="stylesheet" href="estilo1.css">
 
 <?php /*script de breadcrumb y creacion directorio*/
 	$bc="";
-	$bc.='<div><h1>'.'/'.$directorio.'</h1></div>';
-
+	//$bc.='<div><h1>'.'/'.$directorio.'</h1></div>';
+	$bc.='<ul class="breadcrumb">';
+	$bc.='<li>';
+	$bc.='<a href="?dir='.$directorio.'">';
+	$bc.=$directorio;
+	$bc.='</li>';
+	$bc.='</a>';
+	$bc.='</ul>';
 ?>
 	<hr/>
 		<form action="index.php" method="post" enctype="multipart/form-data"> <!-- es necesario hacerlo post y poner el  enctype="multipart/form-data" -->
@@ -172,8 +245,10 @@ $debug=true;
 	<table>
 		
 		<tr>
-			<td><input type="submit" name="crearDir" value="crea Directorio">
-Directorio<input type="text" name="carpeta">
+			<td>
+				<input type="submit" name="crearDir" value="crea Directorio">
+					Directorio
+				<input type="text" name="carpeta" value="">
 			</td>
 		<!-- 	<td></td> -->
 			<!-- <td></td> -->
@@ -193,11 +268,6 @@ if (isset($_POST["subir"]))
 		$bc.='<br>'.$_FILES["imagen"]["size"];
 		$bc.='<br>'.$_FILES["imagen"]["type"];//tipo mime
 		$bc.='<br>'.$_FILES["imagen"]["tmp_name"];
-		// echo $directorio;
-		// echo '<br>'.$_FILES["imagen"]["name"];
-		// echo '<br>'.$_FILES["imagen"]["size"];
-		// echo '<br>'.$_FILES["imagen"]["type"];//tipo mime
-		// echo '<br>'.$_FILES["imagen"]["tmp_name"];
 	}
 	if(is_uploaded_file($_FILES["imagen"]["tmp_name"])){
 	//si venimos de pulsar el boton subir
@@ -223,6 +293,7 @@ if (isset($_POST["subir"]))
 
 	</form>
 	<hr/>
+	<?php echo $pincelDir  ?>
 	<?php echo $bc ?>
 	<hr/>
 
