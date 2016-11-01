@@ -178,31 +178,32 @@ Directorio<input type="text" name="carpeta">
 			<!-- <td></td> -->
 		</tr>
 	<tr>
-		<td><input type="file" name="imagen"><!-- </td>
-		<td> -->
+		<td><input type="file" name="imagen">
 		<input type="submit" name="subir" value="subir"></td>
 		<!-- <td></td> -->
 	</tr>
 	</table>
 <?php /*script de subir*/
 if (isset($_POST["subir"]))
-{
-	if(is_uploaded_file($_FILES["imagen"]["tmp_name"])){
-	//si venimos de pulsar el boton subir
-		echo $directorio;
+{	//echo $_FILES["imagen"]["name"].'<br>tenemos cargado el post de subir<br>';
+	echo $directorio;
 		echo '<br>'.$_FILES["imagen"]["name"];
 		echo '<br>'.$_FILES["imagen"]["size"];
 		echo '<br>'.$_FILES["imagen"]["type"];//tipo mime
-		echo '<br>'.$_FILES["imagen"]["tmp_name"];//nombre temporal con el que se sube el fichero
+		echo '<br>'.$_FILES["imagen"]["tmp_name"];
+	if(is_uploaded_file($_FILES["imagen"]["tmp_name"])){
+	//si venimos de pulsar el boton subir
+	//nombre temporal con el que se sube el fichero
 		//$nombre=time().'_'.$_FILES["imagen"]["name"];
 		$nombre=$_FILES["imagen"]["name"];	
 
 
-	if(($_FILES["imagen"]["type"]=="image/jpeg")||$_FILES["imagen"]["type"]=="image/gif")
-			move_uploaded_file($_FILES["imagen"]["tmp_name"], $directorio.'/'.$nombre);//origen el temporal, destino un timestamp + el nombre del archivo 
-			//move_uploaded_file($_FILES["imagen"]["tmp_name"], "img/".$nombre);
-	}else{
-		echo "solo se pueden subir jpg y gif";
+		if(($_FILES["imagen"]["type"]=="image/jpeg")||$_FILES["imagen"]["type"]=="image/png"){
+				move_uploaded_file($_FILES["imagen"]["tmp_name"], $directorio.'/'.$nombre);//origen el temporal, destino un timestamp + el nombre del archivo 
+				//move_uploaded_file($_FILES["imagen"]["tmp_name"], "img/".$nombre);
+		}else{
+			echo "solo se pueden subir jpg y png";
+		}
 	}
 }
 
