@@ -2,6 +2,7 @@
 $pincel="";
 $pincelDir="";
 $newDir="";
+$dirActual="docs";
 $tab=20;
 $debug=false;
  ?>
@@ -10,10 +11,17 @@ $debug=false;
 <head>
 	<meta charset="UTF-8">
 	<title>proyecto1</title>
-
+<?php 
+	/*cambiar directorio*/
+	if(isset($_GET["changeDir"])){
+				$dirActual.='/'.$_GET["changeDir"];
+	}
+	else
+		$dirActual="docs";
+ ?>
 	<?php /*script de lecturas*/
 			$elemento="";
-			$directorio="docs";
+			$directorio=$dirActual;
 			$Maxlen=0;
 			//resource opendir ( string $path [, resource $context ] )
 			if ($dir=opendir($directorio))//devuelve true a la asignacion
@@ -40,134 +48,147 @@ $debug=false;
 				while($elemento=readdir($dir))//mientra lea
 				{	
 					$len=strlen($elemento);	
-					// if(is_dir($directorio)){
-					// 	$pintaIcono='<img src="'.$directorio.'/'.$elemento.'>';
-					// 	$pincel.='<div class="cajaLinea">';
-					// 				//$pincel.='<div'.$izquierda.'>';
-					// 				$pincel.='<div class="lineaL">';
-					// 				$pincel.='<img src="img/directorio.png" height="40" length="40">';
-					// 				$pincel.='</div>';
-					// 				$pincel.='<div class="lineaC">';
-					// 				//$pincel.='<div'.$centro.'>';
-					// 				$pincel.=' - - '.$elemento;
-					// 				$pincel.='</div>';
-									
-					// 				$pincel.='</div>';
-					// }
-					if(is_file("$directorio/$elemento"))
-					{/*inicio is_file*/
-						$trozos=explode('.',$elemento);
-						$cola=$trozos[count($trozos)-1];
-							switch ($cola) 
-							{
-								case 'jpg':
-									if(!is_null($toAmpliar))//pulsado dibujo
-									{
-										if(($elemento)==$toAmpliar)//el dibujo pulsado coincide
-										{
-											$ampliar='height="500" length="500"';
-										}
-										else //el dibujo pulsado no coincide
-										{
-											$ampliar='height="75" length="75"';
-										}	
-									}
-									else //sin pulsar dibujo
-									{
-										$ampliar='height="75" length="75"';
-									}
-									$pintaIcono='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
-									//$pincel.='<h1>'.$directorio.'/'.$elemento.'|'.$ampliar.'</h1>';
-									$pincel.='<div class="cajaLinea">';
+					if(is_dir("$directorio/$elemento")){
+						$pintaIcono='<img src="'.$directorio.'/'.$elemento.'>';
+						$pincel.='<div class="cajaLinea">';
 									//$pincel.='<div'.$izquierda.'>';
 									$pincel.='<div class="lineaL">';
-									$pincel.='<img src="img/jpeg.png" height="40" length="40">';
+									$pincel.='<img src="img/directorio.png" height="40" length="40">';
 									$pincel.='</div>';
 									$pincel.='<div class="lineaC">';
 									//$pincel.='<div'.$centro.'>';
 									$pincel.=' - - '.$elemento;
 									$pincel.='</div>';
 									$pincel.='<div class="lineaR">';
-									//$pincel.='<div'.$derecha.'>';
-									$pincel.='<a href="index.php?amplia='.$elemento.'">';
-									//$pincel.='<a href="index.php?amplia='.$directorio.'/'.$elemento.'">';
-									//$pincel.='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
-									$pincel.=$pintaIcono;
-									$pincel.='</a>';
-									// $pincel.='es';
-									$pincel.='<a href="index.php?borrar='.$elemento.'">';//para borrar
-									$pincel.='<img src="img/delete.png"  height="10" >';
+									//$pincel.='<a href="';
+									$pincel.='<a href="index.php?changeDir='.$elemento.'"> cambio a directorio';
+									//$pincel.="index.php?changeDir=";
+									//$pincel.=$dir.'?changeDir=';
+									//$pincel.='<a href="$dir/?changeDir=';
+									//$pincel.=$elemento;
+									//$pincel.='> c';
+									//$pincel.='<a href="$dir/?changeDir='.$elemento.'> c';
 									$pincel.='</a>';
 									$pincel.='</div>';
 									$pincel.='</div>';
-									break;
-								case 'png':
-									if(!is_null($toAmpliar))//pulsado dibujo
-									{
-										if(($elemento)==$toAmpliar)//el dibujo pulsado coincide
+					}
+					else
+					{
+						if(is_file("$directorio/$elemento"))
+						{/*inicio is_file*/
+							$trozos=explode('.',$elemento);
+							$cola=$trozos[count($trozos)-1];
+								switch ($cola) 
+								{
+									case 'jpg':
+										if(!is_null($toAmpliar))//pulsado dibujo
 										{
-											$ampliar='height="500" length="500"';
+											if(($elemento)==$toAmpliar)//el dibujo pulsado coincide
+											{
+												$ampliar='height="500" length="500"';
+											}
+											else //el dibujo pulsado no coincide
+											{
+												$ampliar='height="75" length="75"';
+											}	
 										}
-										else //el dibujo pulsado no coincide
+										else //sin pulsar dibujo
 										{
 											$ampliar='height="75" length="75"';
-										}	
-									}
-									else //sin pulsar dibujo
-									{
-										$ampliar='height="75" length="75"';
-									}
-									$pintaIcono='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
-									$pincel.='<div class="cajaLinea">';
-									$pincel.='<div'.$izquierda.'>';
-									$pincel.='<img src="img/png.png" height="40" length="40">';
-									$pincel.='</div>';
-									$pincel.='<div'.$centro.'>';
-									$pincel.=' - - '.$elemento;
-									$pincel.='</div>';
-									$pincel.='<div'.$derecha.'>';
-									$pincel.='<a href="index.php?amplia='.$directorio.'/'.$elemento.'">';
-									//$pincel.='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'">';
-									$pincel.=$pintaIcono;
-									$pincel.='</a>';
-									$pincel.='</div>';
-									$pincel.='</div>';
-									break;
-								case 'docx':
-									$pincel.='<div  class="cajaLinea">';
-									$pincel.='<div'.$izquierda.'>';
-									$pincel.='<img src="img/word.jpg" height="40" length="40">';
-									$pincel.='</div>';
-									$pincel.='<div'.$centro.$Maxlen.'>';
-									$pincel.=' - - '.$elemento;
-									$pincel.='</div>';
-									//$pincel.='<div length="20%">';
-									$pincel.='<div'.$derecha.'>';
-									$pincel.='<a href="docs/'.$elemento.'">  descargar ';
-									$pincel.='</a>';
-									$pincel.='</div>';
-									$pincel.='</div>';
-									break;
-								case 'txt':
-									$pincel.='<div  class="cajaLinea">';
-									$pincel.='<div'.$izquierda.'>';
-									$pincel.='<img src="img/txt.png" height="40" length="40">';
-									$pincel.='</div>';
-									$pincel.='<div'.$centro.$Maxlen.'>';
-									$pincel.=' - - '.$elemento;
-									$pincel.='</div>';
-									$pincel.='<div'.$derecha.'>';
-									$pincel.='<a href="docs/'.$elemento.'">  ver ';
-									$pincel.='</a>';
-									$pincel.='</div>';
-									$pincel.='</div>';
-									break;
-								default:
-									$pincel.='<div>fallo';
-									$pincel.='</div>';
-									break;
-							}
-					}/*fin is_file  */
+										}
+										$pintaIcono='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
+										//$pincel.='<h1>'.$directorio.'/'.$elemento.'|'.$ampliar.'</h1>';
+										$pincel.='<div class="cajaLinea">';
+										//$pincel.='<div'.$izquierda.'>';
+										$pincel.='<div class="lineaL">';
+										$pincel.='<img src="img/jpeg.png" height="40" length="40">';
+										$pincel.='</div>';
+										$pincel.='<div class="lineaC">';
+										//$pincel.='<div'.$centro.'>';
+										$pincel.=' - - '.$elemento;
+										$pincel.='</div>';
+										$pincel.='<div class="lineaR">';
+										//$pincel.='<div'.$derecha.'>';
+										$pincel.='<a href="index.php?amplia='.$elemento.'">';
+										//$pincel.='<a href="index.php?amplia='.$directorio.'/'.$elemento.'">';
+										//$pincel.='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
+										$pincel.=$pintaIcono;
+										$pincel.='</a>';
+										// $pincel.='es';
+										$pincel.='<a href="index.php?borrar='.$elemento.'">';//para borrar
+										$pincel.='<img src="img/delete.png"  height="10" >';
+										$pincel.='</a>';
+										$pincel.='</div>';
+										$pincel.='</div>';
+										break;
+									case 'png':
+										if(!is_null($toAmpliar))//pulsado dibujo
+										{
+											if(($elemento)==$toAmpliar)//el dibujo pulsado coincide
+											{
+												$ampliar='height="500" length="500"';
+											}
+											else //el dibujo pulsado no coincide
+											{
+												$ampliar='height="75" length="75"';
+											}	
+										}
+										else //sin pulsar dibujo
+										{
+											$ampliar='height="75" length="75"';
+										}
+										$pintaIcono='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'>';
+										$pincel.='<div class="cajaLinea">';
+										$pincel.='<div'.$izquierda.'>';
+										$pincel.='<img src="img/png.png" height="40" length="40">';
+										$pincel.='</div>';
+										$pincel.='<div'.$centro.'>';
+										$pincel.=' - - '.$elemento;
+										$pincel.='</div>';
+										$pincel.='<div'.$derecha.'>';
+										$pincel.='<a href="index.php?amplia='.$directorio.'/'.$elemento.'">';
+										//$pincel.='<img src="'.$directorio.'/'.$elemento.'" '.$ampliar.'">';
+										$pincel.=$pintaIcono;
+										$pincel.='</a>';
+										$pincel.='</div>';
+										$pincel.='</div>';
+										break;
+									case 'docx':
+										$pincel.='<div  class="cajaLinea">';
+										$pincel.='<div'.$izquierda.'>';
+										$pincel.='<img src="img/word.jpg" height="40" length="40">';
+										$pincel.='</div>';
+										$pincel.='<div'.$centro.$Maxlen.'>';
+										$pincel.=' - - '.$elemento;
+										$pincel.='</div>';
+										//$pincel.='<div length="20%">';
+										$pincel.='<div'.$derecha.'>';
+										$pincel.='<a href="docs/'.$elemento.'">  descargar ';
+										$pincel.='</a>';
+										$pincel.='</div>';
+										$pincel.='</div>';
+										break;
+									case 'txt':
+										$pincel.='<div  class="cajaLinea">';
+										$pincel.='<div'.$izquierda.'>';
+										$pincel.='<img src="img/txt.png" height="40" length="40">';
+										$pincel.='</div>';
+										$pincel.='<div'.$centro.$Maxlen.'>';
+										$pincel.=' - - '.$elemento;
+										$pincel.='</div>';
+										$pincel.='<div'.$derecha.'>';
+										$pincel.='<a href="docs/'.$elemento.'">  ver ';
+										$pincel.='</a>';
+										$pincel.='</div>';
+										$pincel.='</div>';
+										break;
+									default:
+										$pincel.='<div>fallo';
+										$pincel.='</div>';
+										break;
+								}
+						}/*fin is_file  */
+					}
 				}
 			}
 
@@ -217,10 +238,10 @@ if(isset($_GET["borrar"]))
 				}
 
 		}
-		else
-		{
-			$pincelDir.="no esta establecido el CreaDir";
-		}
+		// else
+		// {
+		// 	$pincelDir.="no esta establecido el CreaDir";
+		// }
 	 ?>
 </head>
 <body>
@@ -229,13 +250,43 @@ if(isset($_GET["borrar"]))
 
 <?php /*script de breadcrumb y creacion directorio*/
 	$bc="";
+	$vBc=explode('/',$directorio);	
+	//$bc.='el numero de nivel es: '.count($vBc);
+
+
 	//$bc.='<div><h1>'.'/'.$directorio.'</h1></div>';
 	$bc.='<ul class="breadcrumb">';
-	$bc.='<li>';
-	$bc.='<a href="?dir='.$directorio.'">';
-	$bc.=$directorio;
-	$bc.='</li>';
-	$bc.='</a>';
+	//foreach ($vBc as $subDir) {
+	if(count($vBc)>1)
+	{/*si hay subdirectorios*/
+
+
+	
+		for ($i=0; $i < count($vBc); $i++) 
+		{ 
+			$bc.='<li>';
+			$bc.='<a href="?dir=';
+			for ($j=0; $j <=$i; $j++) { 
+				$bc.='/';
+				$bc.=$vBc[$j];
+			}
+			$bc.='">';
+			$bc.=$vBc[$i];
+			$bc.='</a>';
+			$bc.='</li>';
+		
+		}
+	}
+	else /*solo un directorio*/
+	{
+			$bc.='<li>';
+			$bc.='<a href="?dir=';
+			$bc.='docs';
+			$bc.='">';
+			$bc.='docs';
+			$bc.='</a>';
+			$bc.='</li>';
+	}
 	$bc.='</ul>';
 ?>
 	<hr/>
