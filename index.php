@@ -7,11 +7,8 @@ $tab=20;
 <head>
 	<meta charset="UTF-8">
 	<title>proyecto1</title>
-</head>
-<body>
-<link rel="stylesheet" href="estilo1.css">
-	<hr>
-		<?php 
+	
+	<?php /*script de lecturas*/
 			$elemento="";
 			$directorio="docs";
 			$Maxlen=0;
@@ -154,10 +151,70 @@ $tab=20;
 					}
 				}
 			}
-			echo $pincel;
-		 ?>
 
-	</hr>
+			
+?>
+
+</head>
+<body>
+<link rel="stylesheet" href="estilo1.css">
+
+<?php /*script de breadcrumb y creacion directorio*/
+	$bc="";
+	$bc.='<div><h1>'.'/'.$directorio.'</h1></div>';
+
+?>
+	<hr/>
+		<form action="index.php" method="post" enctype="multipart/form-data"> <!-- es necesario hacerlo post y poner el  enctype="multipart/form-data" -->
+		
+<!-- 		<input type="file" name="imagen"> -->
+	<table>
+		
+		<tr>
+			<td><input type="submit" name="crearDir" value="crea Directorio">
+Directorio<input type="text" name="carpeta">
+			</td>
+		<!-- 	<td></td> -->
+			<!-- <td></td> -->
+		</tr>
+	<tr>
+		<td><input type="file" name="imagen"><!-- </td>
+		<td> -->
+		<input type="submit" name="subir" value="subir"></td>
+		<!-- <td></td> -->
+	</tr>
+	</table>
+<?php /*script de subir*/
+if (isset($_POST["subir"]))
+{
+	if(is_uploaded_file($_FILES["imagen"]["tmp_name"])){
+	//si venimos de pulsar el boton subir
+		echo $directorio;
+		echo '<br>'.$_FILES["imagen"]["name"];
+		echo '<br>'.$_FILES["imagen"]["size"];
+		echo '<br>'.$_FILES["imagen"]["type"];//tipo mime
+		echo '<br>'.$_FILES["imagen"]["tmp_name"];//nombre temporal con el que se sube el fichero
+		//$nombre=time().'_'.$_FILES["imagen"]["name"];
+		$nombre=$_FILES["imagen"]["name"];	
+
+
+	if(($_FILES["imagen"]["type"]=="image/jpeg")||$_FILES["imagen"]["type"]=="image/gif")
+			move_uploaded_file($_FILES["imagen"]["tmp_name"], $directorio.'/'.$nombre);//origen el temporal, destino un timestamp + el nombre del archivo 
+			//move_uploaded_file($_FILES["imagen"]["tmp_name"], "img/".$nombre);
+	}else{
+		echo "solo se pueden subir jpg y gif";
+	}
+}
+
+ ?>
+
+	</form>
+	<hr/>
+	<?php echo $bc ?>
+	<hr/>
+
+<?php echo $pincel; ?>
+	
 
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
 </body>
