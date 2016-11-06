@@ -6,142 +6,14 @@ $dirBase="docs";
 $dirActual=$dirBase;
 $tab=20;
 $debug=false;
+$elemento="";
+$directorio="";
  ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
 	<meta charset="UTF-8">
 	<title>proyecto1</title>
-<?php 
-		/*script creacion directorio*/
-
-		if(isset($_POST["carpeta"]))
-		{	
-			$directorio=$dirActual;
-			$newDir=$_POST["carpeta"];
-			if(strlen($newDir)==0)
-			{
-				$pincelDir.="introduce el nombre del directorio en Campo Directorio";
-			}
-			else
-			{
-					$path=$directorio.'/'.$newDir;
-					if($debug)
-						echo '<h2>'.$path.'</h2>';
-
-					if(mkdir($path))
-					{
-							$pincelDir.="directorioCreado: ".$directorio.'/'.$newDir;
-							$_GET["changeDir"]=$NewDir; //prepraro elcambio al nuevo directorio
-					}
-					else
-					{
-							$pincelDir.="creacion directorio fallida ";
-					}
-			}
-
-		}//fin esta cargada la variable carpeta??
-	
-?>
-<?php 
-	/*cambiar directorio*/
-	if(isset($_GET["changeDir"]))
-	{
-		if ($elemento!='.')//si no es el directorio .
-				$dirActual.='/'.$_GET["changeDir"];
-	}
-	// else
-	// 	$dirActual="docs";
- ?>
- <?php /*script borrar elmento*/
-if(isset($_GET["borrar"]))
-{
-	$borrar=$_GET["borrar"];
-	$ruta="img/$borrar";//FIXME
-	if(is_file($ruta))
-	{//si el fichero existe, 
-		if(!unlink($ruta))
-		{//lo intenta BORRAR
-			echo "No se ha  podido borrar";//si falla muestra aviso
-		}
-	}
-
-}
- ?>
- <?php /*script de subir*/
-	if (isset($_POST["subir"]))
-	{/*esta definido subir*/
-	//echo $_FILES["imagen"]["name"].'<br>tenemos cargado el post de subir<br>';
-		if($debug)
-		{//inicio debug
-			$bc.=$directorio;
-			$bc.='<br>'.$_FILES["imagen"]["name"];
-			$bc.='<br>'.$_FILES["imagen"]["size"];
-			$bc.='<br>'.$_FILES["imagen"]["type"];//tipo mime
-			$bc.='<br>'.$_FILES["imagen"]["tmp_name"];
-		}//fin debug
-		if(is_uploaded_file($_FILES["imagen"]["tmp_name"]))
-		{//si se ha subido el archivo
-		
-		//nombre temporal con el que se sube el fichero
-			//$nombre=time().'_'.$_FILES["imagen"]["name"];
-			$nombre=$_FILES["imagen"]["name"];	
-
-
-			//if(($_FILES["imagen"]["type"]=="image/jpeg")||$_FILES["imagen"]["type"]=="image/png"){
-			if(($_FILES["imagen"]["type"]=="image/jpeg")||
-				($_FILES["imagen"]["type"]=="image/png")||
-				($_FILES["imagen"]["type"]=="application/octet-stream")||
-				($_FILES["imagen"]["type"]=="text/plain"))
-			{//inicio comprobacion type archivos permitidos
-					move_uploaded_file($_FILES["imagen"]["tmp_name"], $directorio.'/'.$nombre);//origen el temporal, destino un timestamp + el nombre del archivo 
-					//move_uploaded_file($_FILES["imagen"]["tmp_name"], "img/".$nombre);
-			}//fin comprobacion type archivos permitidos
-			else//no son archivos de tipo permitido
-			{
-				echo "solo se pueden subir jpg y png";
-			}//fin no son archivos de tipo permitido
-		}//fin de si se ha subido el archivo
-	}/*fin de esta definido subir*/
- ?>
- <?php /*script de breadcrumb */
-	$bc="";
-	$vBc=explode('/',$directorio);	
-	//$bc.='el numero de nivel es: '.count($vBc);
-	//$bc.='<div><h1>'.'/'.$directorio.'</h1></div>';
-	$bc.='<ul class="breadcrumb">';
-	//foreach ($vBc as $subDir) {
-	if(count($vBc)>1)
-	{/*si hay subdirectorios*/
-		for ($i=0; $i < count($vBc); $i++) 
-		{ //recorremos los subdirectorios
-			$bc.='<li>';//abrimos inicio lista
-			$bc.='<a href="?dir=';//abrimos enlace
-			for ($j=0; $j <=$i; $j++) 
-			{ //escribimos / y el siguiente subdirectorio
-				$bc.='/';
-				$bc.=$vBc[$j];
-			}
-			$bc.='">';
-			$bc.=$vBc[$i];
-			$bc.='</a>';
-			$bc.='</li>';
-		
-		}//fin de for recorremos los subdirectorios
-	}/*fin de si hay directorio*/
-	else /*solo un directorio*/
-	{
-			$bc.='<li>';
-			$bc.='<a href="?dir=';
-			$bc.='docs';
-			$bc.='">';
-			$bc.='docs';
-			$bc.='</a>';
-			$bc.='</li>';
-	}/*find de solo un directorio*/
-	$bc.='</ul>';
-?>
-
 	<?php /*script de lecturas*/
 			$elemento="";
 			$directorio=$dirActual;
@@ -321,6 +193,137 @@ if(isset($_GET["borrar"]))
 	}/*fin while*/	
 }/*fin fopen */
 ?>
+<?php 
+		/*script creacion directorio*/
+
+		if(isset($_POST["carpeta"]))
+		{	
+			$directorio=$dirActual;
+			$newDir=$_POST["carpeta"];
+			if(strlen($newDir)==0)
+			{
+				$pincelDir.="introduce el nombre del directorio en Campo Directorio";
+			}
+			else
+			{
+					$path=$directorio.'/'.$newDir;
+					if($debug)
+						echo '<h2>'.$path.'</h2>';
+
+					if(mkdir($path))
+					{
+							$pincelDir.="directorioCreado: ".$directorio.'/'.$newDir;
+							$_GET["changeDir"]=$NewDir; //prepraro elcambio al nuevo directorio
+					}
+					else
+					{
+							$pincelDir.="creacion directorio fallida ";
+					}
+			}
+
+		}//fin esta cargada la variable carpeta??
+	
+?>
+<?php 
+	/*cambiar directorio*/
+	if(isset($_GET["changeDir"]))
+	{
+		if ($elemento!='.')//si no es el directorio .
+				$dirActual.='/'.$_GET["changeDir"];
+	}
+	// else
+	// 	$dirActual="docs";
+ ?>
+ <?php /*script borrar elmento*/
+if(isset($_GET["borrar"]))
+{
+	$borrar=$_GET["borrar"];
+	$ruta="img/$borrar";//FIXME
+	if(is_file($ruta))
+	{//si el fichero existe, 
+		if(!unlink($ruta))
+		{//lo intenta BORRAR
+			echo "No se ha  podido borrar";//si falla muestra aviso
+		}
+	}
+
+}
+ ?>
+ <?php /*script de subir*/
+	if (isset($_POST["subir"]))
+	{/*esta definido subir*/
+	//echo $_FILES["imagen"]["name"].'<br>tenemos cargado el post de subir<br>';
+		if($debug)
+		{//inicio debug
+			$bc.=$directorio;
+			$bc.='<br>'.$_FILES["imagen"]["name"];
+			$bc.='<br>'.$_FILES["imagen"]["size"];
+			$bc.='<br>'.$_FILES["imagen"]["type"];//tipo mime
+			$bc.='<br>'.$_FILES["imagen"]["tmp_name"];
+		}//fin debug
+		if(is_uploaded_file($_FILES["imagen"]["tmp_name"]))
+		{//si se ha subido el archivo
+		
+		//nombre temporal con el que se sube el fichero
+			//$nombre=time().'_'.$_FILES["imagen"]["name"];
+			$nombre=$_FILES["imagen"]["name"];	
+
+
+			//if(($_FILES["imagen"]["type"]=="image/jpeg")||$_FILES["imagen"]["type"]=="image/png"){
+			if(($_FILES["imagen"]["type"]=="image/jpeg")||
+				($_FILES["imagen"]["type"]=="image/png")||
+				($_FILES["imagen"]["type"]=="application/octet-stream")||
+				($_FILES["imagen"]["type"]=="text/plain"))
+			{//inicio comprobacion type archivos permitidos
+					move_uploaded_file($_FILES["imagen"]["tmp_name"], $directorio.'/'.$nombre);//origen el temporal, destino un timestamp + el nombre del archivo 
+					//move_uploaded_file($_FILES["imagen"]["tmp_name"], "img/".$nombre);
+			}//fin comprobacion type archivos permitidos
+			else//no son archivos de tipo permitido
+			{
+				echo "solo se pueden subir jpg y png";
+			}//fin no son archivos de tipo permitido
+		}//fin de si se ha subido el archivo
+	}/*fin de esta definido subir*/
+ ?>
+ <?php /*script de breadcrumb */
+	$bc="";
+	$vBc=explode('/',$directorio);	
+	//$bc.='el numero de nivel es: '.count($vBc);
+	//$bc.='<div><h1>'.'/'.$directorio.'</h1></div>';
+	$bc.='<ul class="breadcrumb">';
+	//foreach ($vBc as $subDir) {
+	if(count($vBc)>1)
+	{/*si hay subdirectorios*/
+		for ($i=0; $i < count($vBc); $i++) 
+		{ //recorremos los subdirectorios
+			$bc.='<li>';//abrimos inicio lista
+			$bc.='<a href="?dir=';//abrimos enlace
+			for ($j=0; $j <=$i; $j++) 
+			{ //escribimos / y el siguiente subdirectorio
+				$bc.='/';
+				$bc.=$vBc[$j];
+			}
+			$bc.='">';
+			$bc.=$vBc[$i];
+			$bc.='</a>';
+			$bc.='</li>';
+		
+		}//fin de for recorremos los subdirectorios
+	}/*fin de si hay directorio*/
+	else /*solo un directorio*/
+	{
+			$bc.='<li>';
+			$bc.='<a href="?dir=';
+			$bc.='docs';
+			$bc.='">';
+			$bc.='docs';
+			$bc.='</a>';
+			$bc.='</li>';
+	}/*find de solo un directorio*/
+	$bc.='</ul>';
+?>
+
+	
 
 
 </head>
