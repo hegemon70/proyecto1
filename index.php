@@ -2,7 +2,8 @@
 $pincel="";
 $pincelDir="";
 $newDir="";
-$dirActual="docs";
+$dirBase="docs";
+$dirActual=$dirBase;
 $tab=20;
 $debug=false;
  ?>
@@ -12,13 +13,135 @@ $debug=false;
 	<meta charset="UTF-8">
 	<title>proyecto1</title>
 <?php 
+		/*script creacion directorio*/
+
+		if(isset($_POST["carpeta"]))
+		{	
+			$directorio=$dirActual;
+			$newDir=$_POST["carpeta"];
+			if(strlen($newDir)==0)
+			{
+				$pincelDir.="introduce el nombre del directorio en Campo Directorio";
+			}
+			else
+			{
+					$path=$directorio.'/'.$newDir;
+					if($debug)
+						echo '<h2>'.$path.'</h2>';
+
+					if(mkdir($path))
+					{
+							$pincelDir.="directorioCreado: ".$directorio.'/'.$newDir;
+							$_GET["changeDir"]=$NewDir; //prepraro elcambio al nuevo directorio
+					}
+					else
+					{
+							$pincelDir.="creacion directorio fallida ";
+					}
+			}
+
+		}//fin esta cargada la variable carpeta??
+	
+?>
+<?php 
 	/*cambiar directorio*/
-	if(isset($_GET["changeDir"])){
+	if(isset($_GET["changeDir"]))
+	{
+		if ($elemento!='.')//si no es el directorio .
 				$dirActual.='/'.$_GET["changeDir"];
 	}
-	else
-		$dirActual="docs";
+	// else
+	// 	$dirActual="docs";
  ?>
+ <?php /*script borrar elmento*/
+if(isset($_GET["borrar"]))
+{
+	$borrar=$_GET["borrar"];
+	$ruta="img/$borrar";//FIXME
+	if(is_file($ruta))
+	{//si el fichero existe, 
+		if(!unlink($ruta))
+		{//lo intenta BORRAR
+			echo "No se ha  podido borrar";//si falla muestra aviso
+		}
+	}
+
+}
+ ?>
+ <?php /*script de subir*/
+	if (isset($_POST["subir"]))
+	{/*esta definido subir*/
+	//echo $_FILES["imagen"]["name"].'<br>tenemos cargado el post de subir<br>';
+		if($debug)
+		{//inicio debug
+			$bc.=$directorio;
+			$bc.='<br>'.$_FILES["imagen"]["name"];
+			$bc.='<br>'.$_FILES["imagen"]["size"];
+			$bc.='<br>'.$_FILES["imagen"]["type"];//tipo mime
+			$bc.='<br>'.$_FILES["imagen"]["tmp_name"];
+		}//fin debug
+		if(is_uploaded_file($_FILES["imagen"]["tmp_name"]))
+		{//si se ha subido el archivo
+		
+		//nombre temporal con el que se sube el fichero
+			//$nombre=time().'_'.$_FILES["imagen"]["name"];
+			$nombre=$_FILES["imagen"]["name"];	
+
+
+			//if(($_FILES["imagen"]["type"]=="image/jpeg")||$_FILES["imagen"]["type"]=="image/png"){
+			if(($_FILES["imagen"]["type"]=="image/jpeg")||
+				($_FILES["imagen"]["type"]=="image/png")||
+				($_FILES["imagen"]["type"]=="application/octet-stream")||
+				($_FILES["imagen"]["type"]=="text/plain"))
+			{//inicio comprobacion type archivos permitidos
+					move_uploaded_file($_FILES["imagen"]["tmp_name"], $directorio.'/'.$nombre);//origen el temporal, destino un timestamp + el nombre del archivo 
+					//move_uploaded_file($_FILES["imagen"]["tmp_name"], "img/".$nombre);
+			}//fin comprobacion type archivos permitidos
+			else//no son archivos de tipo permitido
+			{
+				echo "solo se pueden subir jpg y png";
+			}//fin no son archivos de tipo permitido
+		}//fin de si se ha subido el archivo
+	}/*fin de esta definido subir*/
+ ?>
+ <?php /*script de breadcrumb */
+	$bc="";
+	$vBc=explode('/',$directorio);	
+	//$bc.='el numero de nivel es: '.count($vBc);
+	//$bc.='<div><h1>'.'/'.$directorio.'</h1></div>';
+	$bc.='<ul class="breadcrumb">';
+	//foreach ($vBc as $subDir) {
+	if(count($vBc)>1)
+	{/*si hay subdirectorios*/
+		for ($i=0; $i < count($vBc); $i++) 
+		{ //recorremos los subdirectorios
+			$bc.='<li>';//abrimos inicio lista
+			$bc.='<a href="?dir=';//abrimos enlace
+			for ($j=0; $j <=$i; $j++) 
+			{ //escribimos / y el siguiente subdirectorio
+				$bc.='/';
+				$bc.=$vBc[$j];
+			}
+			$bc.='">';
+			$bc.=$vBc[$i];
+			$bc.='</a>';
+			$bc.='</li>';
+		
+		}//fin de for recorremos los subdirectorios
+	}/*fin de si hay directorio*/
+	else /*solo un directorio*/
+	{
+			$bc.='<li>';
+			$bc.='<a href="?dir=';
+			$bc.='docs';
+			$bc.='">';
+			$bc.='docs';
+			$bc.='</a>';
+			$bc.='</li>';
+	}/*find de solo un directorio*/
+	$bc.='</ul>';
+?>
+
 	<?php /*script de lecturas*/
 			$elemento="";
 			$directorio=$dirActual;
@@ -48,29 +171,33 @@ $debug=false;
 				while($elemento=readdir($dir))//mientra lea
 				{	
 					$len=strlen($elemento);	
-					if(is_dir("$directorio/$elemento")){
-						$pintaIcono='<img src="'.$directorio.'/'.$elemento.'>';
-						$pincel.='<div class="cajaLinea">';
-									//$pincel.='<div'.$izquierda.'>';
-									$pincel.='<div class="lineaL">';
-									$pincel.='<img src="img/directorio.png" height="40" length="40">';
-									$pincel.='</div>';
-									$pincel.='<div class="lineaC">';
-									//$pincel.='<div'.$centro.'>';
-									$pincel.=' - - '.$elemento;
-									$pincel.='</div>';
-									$pincel.='<div class="lineaR">';
-									//$pincel.='<a href="';
-									$pincel.='<a href="index.php?changeDir='.$elemento.'"> cambio a directorio';
-									//$pincel.="index.php?changeDir=";
-									//$pincel.=$dir.'?changeDir=';
-									//$pincel.='<a href="$dir/?changeDir=';
-									//$pincel.=$elemento;
-									//$pincel.='> c';
-									//$pincel.='<a href="$dir/?changeDir='.$elemento.'> c';
-									$pincel.='</a>';
-									$pincel.='</div>';
-									$pincel.='</div>';
+					if(is_dir("$directorio/$elemento"))/*inicio es directorio*/
+					{
+						if ($elemento!='.')//si no es el directorio .
+						{
+							$pintaIcono='<img src="'.$directorio.'/'.$elemento.'>';
+							$pincel.='<div class="cajaLinea">';
+							//$pincel.='<div'.$izquierda.'>';
+							$pincel.='<div class="lineaL">';
+							$pincel.='<img src="img/directorio.png" height="40" length="40">';
+							$pincel.='</div>';
+							$pincel.='<div class="lineaC">';
+							//$pincel.='<div'.$centro.'>';
+							$pincel.=' - - '.$elemento;
+							$pincel.='</div>';
+							$pincel.='<div class="lineaR">';
+							//$pincel.='<a href="';
+							$pincel.='<a href="index.php?changeDir='.$elemento.'"> cambio a directorio';
+							//$pincel.="index.php?changeDir=";
+							//$pincel.=$dir.'?changeDir=';
+							//$pincel.='<a href="$dir/?changeDir=';
+							//$pincel.=$elemento;
+							//$pincel.='> c';
+							//$pincel.='<a href="$dir/?changeDir='.$elemento.'> c';
+							$pincel.='</a>';
+							$pincel.='</div>';
+							$pincel.='</div>';
+						}
 					}
 					else
 					{
@@ -186,169 +313,48 @@ $debug=false;
 										$pincel.='<div>fallo';
 										$pincel.='</div>';
 										break;
-								}
-						}/*fin is_file  */
-					}
-				}
-			}
-
-			
+									}/*fin switch*/
+				
+			}/*fin is_file  */
+		
+		}/*fin else*/
+	}/*fin while*/	
+}/*fin fopen */
 ?>
-<?php 
-if(isset($_GET["borrar"]))
-{
-	$borrar=$_GET["borrar"];
-	$ruta="img/$borrar";
-	if(is_file($ruta)){//si el fichero existe, 
-		if(!unlink($ruta)){//lo intenta BORRAR
-			echo "No se ha  podido borrar";//si falla muestra aviso
-		}
-	}
-}
- ?>
-<?php 
-		/*script creacion directorio*/
-		if(isset($_POST["carpeta"]))
-		{
-				$newDir=$_POST["carpeta"];
-				if(strlen($newDir)==0)
-				{
-					$pincelDir.="directorioVacio";
-				}
-				else
-				{
-					// try {
-						$path=$directorio.'/'.$newDir;
-						if($debug)
-							echo '<h2>'.$path.'</h2>';
 
-						if(mkdir($path))
-						{
-								$pincelDir.="directorioCreado: ".$directorio.'/'.$newDir;;
-						}
-						else
-						{
-								$pincelDir.="creacion directorio fallida ";
-						}
-					// } catch (e_warning $e) {
-					// 	echo 'aviso directorio ya creado';
-					// }
-					//$pincelDir.=$directorio.'/'.$newDir;
-					
-				}
 
-		}
-		// else
-		// {
-		// 	$pincelDir.="no esta establecido el CreaDir";
-		// }
-	 ?>
 </head>
 <body>
 
 <link rel="stylesheet" href="estilo1.css">
-
-<?php /*script de breadcrumb y creacion directorio*/
-	$bc="";
-	$vBc=explode('/',$directorio);	
-	//$bc.='el numero de nivel es: '.count($vBc);
-
-
-	//$bc.='<div><h1>'.'/'.$directorio.'</h1></div>';
-	$bc.='<ul class="breadcrumb">';
-	//foreach ($vBc as $subDir) {
-	if(count($vBc)>1)
-	{/*si hay subdirectorios*/
-
-
-	
-		for ($i=0; $i < count($vBc); $i++) 
-		{ 
-			$bc.='<li>';
-			$bc.='<a href="?dir=';
-			for ($j=0; $j <=$i; $j++) { 
-				$bc.='/';
-				$bc.=$vBc[$j];
-			}
-			$bc.='">';
-			$bc.=$vBc[$i];
-			$bc.='</a>';
-			$bc.='</li>';
-		
-		}
-	}
-	else /*solo un directorio*/
-	{
-			$bc.='<li>';
-			$bc.='<a href="?dir=';
-			$bc.='docs';
-			$bc.='">';
-			$bc.='docs';
-			$bc.='</a>';
-			$bc.='</li>';
-	}
-	$bc.='</ul>';
-?>
 	<hr/>
 		<form action="index.php" method="post" enctype="multipart/form-data"> <!-- es necesario hacerlo post y poner el  enctype="multipart/form-data" -->
-		
 <!-- 		<input type="file" name="imagen"> -->
-	<table>
-		
-		<tr>
-			<td>
-				<input type="submit" name="crearDir" value="crea Directorio">
-					Directorio
-				<input type="text" name="carpeta" value="">
-			</td>
-		<!-- 	<td></td> -->
-			<!-- <td></td> -->
-		</tr>
-	<tr>
-		<td><input type="file" name="imagen">
-		<input type="submit" name="subir" value="subir"></td>
-		<!-- <td></td> -->
-	</tr>
-	</table>
-<?php /*script de subir*/
-if (isset($_POST["subir"]))
-{	//echo $_FILES["imagen"]["name"].'<br>tenemos cargado el post de subir<br>';
-	if($debug){
-		$bc.=$directorio;
-		$bc.='<br>'.$_FILES["imagen"]["name"];
-		$bc.='<br>'.$_FILES["imagen"]["size"];
-		$bc.='<br>'.$_FILES["imagen"]["type"];//tipo mime
-		$bc.='<br>'.$_FILES["imagen"]["tmp_name"];
-	}
-	if(is_uploaded_file($_FILES["imagen"]["tmp_name"])){
-	//si venimos de pulsar el boton subir
-	//nombre temporal con el que se sube el fichero
-		//$nombre=time().'_'.$_FILES["imagen"]["name"];
-		$nombre=$_FILES["imagen"]["name"];	
-
-
-		//if(($_FILES["imagen"]["type"]=="image/jpeg")||$_FILES["imagen"]["type"]=="image/png"){
-			if(($_FILES["imagen"]["type"]=="image/jpeg")||
-				($_FILES["imagen"]["type"]=="image/png")||
-				($_FILES["imagen"]["type"]=="application/octet-stream")||
-				($_FILES["imagen"]["type"]=="text/plain")){
-				move_uploaded_file($_FILES["imagen"]["tmp_name"], $directorio.'/'.$nombre);//origen el temporal, destino un timestamp + el nombre del archivo 
-				//move_uploaded_file($_FILES["imagen"]["tmp_name"], "img/".$nombre);
-		}else{
-			echo "solo se pueden subir jpg y png";
-		}
-	}
-}
-
- ?>
-
+			<table>
+				<tr>
+					<td>
+						<input type="submit" name="crearDir" value="crea Directorio">
+							Directorio
+						<input type="text" name="carpeta" value="">
+					</td>
+				<!-- 	<td></td> -->
+					<!-- <td></td> -->
+				</tr>
+			<tr>
+				<td>
+					<input type="file" name="imagen">
+					<input type="submit" name="subir" value="subir">
+				</td>
+				<!-- <td></td> -->
+			</tr>
+			</table>
 	</form>
 	<hr/>
-	<?php echo $pincelDir  ?>
-	<?php echo $bc ?>
+	<?php echo $pincelDir;  ?>
+	<?php echo $bc; ?>
 	<hr/>
 
-<?php echo $pincel; ?>
+	<?php echo $pincel; ?>
 	
 
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
