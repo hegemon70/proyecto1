@@ -4,10 +4,12 @@ $pincelDir="";
 $newDir="";
 $dirBase="docs";
 $dirActual=$dirBase;
+$dirLevel=0;
 $tab=20;
 $debug=false;
 $elemento="";
 $directorio="";
+
  ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -16,7 +18,30 @@ $directorio="";
 	<title>proyecto1</title>
 	<?php /*script de lecturas*/
 			$elemento="";
-			$directorio=$dirActual;
+			//$directorio=isset($_GET["changeDir"])?$dirActual+'/'+$_GET["changeDir"]:$dirActual;
+			if (isset($_GET["changeDir"]))
+			{	
+				echo "entra en el cambio de directorio| ";
+				if($_GET["changeDir"]=='..')
+				{
+					if($dirLevel!=0)//no es el directorio Raiz
+					echo"pero como es raiz no hace nada|";
+					$directorio=$dirBase;
+				}
+				else
+				{
+					$temp=$_GET["changeDir"];
+					$directorio=$dirActual.'/'.$temp;
+				}
+
+				
+				
+			}
+			else{
+				echo "NO entra en el cambio de directorio";
+				$directorio=$dirActual;
+			}
+		
 			$Maxlen=0;
 			//resource opendir ( string $path [, resource $context ] )
 			if ($dir=opendir($directorio))//devuelve true a la asignacion
@@ -45,30 +70,37 @@ $directorio="";
 					$len=strlen($elemento);	
 					if(is_dir("$directorio/$elemento"))/*inicio es directorio*/
 					{
-						if ($elemento!='.')//si no es el directorio .
+						if ($elemento!='.')//si no es el directorio . 
 						{
-							$pintaIcono='<img src="'.$directorio.'/'.$elemento.'>';
-							$pincel.='<div class="cajaLinea">';
-							//$pincel.='<div'.$izquierda.'>';
-							$pincel.='<div class="lineaL">';
-							$pincel.='<img src="img/directorio.png" height="40" length="40">';
-							$pincel.='</div>';
-							$pincel.='<div class="lineaC">';
-							//$pincel.='<div'.$centro.'>';
-							$pincel.=' - - '.$elemento;
-							$pincel.='</div>';
-							$pincel.='<div class="lineaR">';
-							//$pincel.='<a href="';
-							$pincel.='<a href="index.php?changeDir='.$elemento.'"> cambio a directorio';
-							//$pincel.="index.php?changeDir=";
-							//$pincel.=$dir.'?changeDir=';
-							//$pincel.='<a href="$dir/?changeDir=';
-							//$pincel.=$elemento;
-							//$pincel.='> c';
-							//$pincel.='<a href="$dir/?changeDir='.$elemento.'> c';
-							$pincel.='</a>';
-							$pincel.='</div>';
-							$pincel.='</div>';
+							if(($elemento=='..')&&($dirLevel==0))//si es .. en base
+							{
+
+							}
+							else
+							{
+								$pintaIcono='<img src="'.$directorio.'/'.$elemento.'>';
+								$pincel.='<div class="cajaLinea">';
+								//$pincel.='<div'.$izquierda.'>';
+								$pincel.='<div class="lineaL">';
+								$pincel.='<img src="img/directorio.png" height="40" length="40">';
+								$pincel.='</div>';
+								$pincel.='<div class="lineaC">';
+								//$pincel.='<div'.$centro.'>';
+								$pincel.=' - - '.$elemento;
+								$pincel.='</div>';
+								$pincel.='<div class="lineaR">';
+								//$pincel.='<a href="';
+								$pincel.='<a href="index.php?changeDir='.$elemento.'"> cambio a directorio';
+								//$pincel.="index.php?changeDir=";
+								//$pincel.=$dir.'?changeDir=';
+								//$pincel.='<a href="$dir/?changeDir=';
+								//$pincel.=$elemento;
+								//$pincel.='> c';
+								//$pincel.='<a href="$dir/?changeDir='.$elemento.'> c';
+								$pincel.='</a>';
+								$pincel.='</div>';
+								$pincel.='</div>';
+							}
 						}
 					}
 					else
@@ -200,6 +232,8 @@ $directorio="";
 		{	
 			$directorio=$dirActual;
 			$newDir=$_POST["carpeta"];
+
+
 			if(strlen($newDir)==0)
 			{
 				$pincelDir.="introduce el nombre del directorio en Campo Directorio";
@@ -209,11 +243,10 @@ $directorio="";
 					$path=$directorio.'/'.$newDir;
 					if($debug)
 						echo '<h2>'.$path.'</h2>';
-
 					if(mkdir($path))
 					{
 							$pincelDir.="directorioCreado: ".$directorio.'/'.$newDir;
-							$_GET["changeDir"]=$NewDir; //prepraro elcambio al nuevo directorio
+							$_GET["changeDir"]=$newDir; //preparo elcambio al nuevo directorio
 					}
 					else
 					{
@@ -227,27 +260,77 @@ $directorio="";
 <?php 
 	/*cambiar directorio*/
 	if(isset($_GET["changeDir"]))
-	{
-		if ($elemento!='.')//si no es el directorio .
-				$dirActual.='/'.$_GET["changeDir"];
+	{	
+		if ($dirActual=='docs' && $dirLevel==0)//si estoy en el raiz
+		{	
+			echo "estoy en el directorio base |";
+			if($_GET["changeDir"]!='..' )// y no intento bajar mas
+			{
+				$oldDir=$dirActual;
+				$dirActual=$dirActual.'/'.$_GET["changeDir"];
+				if(!chdir($dirActual))
+				{
+					echo "fallo al cambiar de directorio";
+						//$_GET["changeDir"]=null;
+				}
+				else
+				{
+						
+					$dirLevel++;
+					echo "cambiado el directorio de ".$oldDir." al directorio ".$dirActual." nivel ".$dirLevel;
+					//$_GET['dirActual']=$dirActual;
+					//$_GET["changeDir"]=null;
+				}
+				
+			}
+			else //directorio base
+			{
+				echo "no puedes ir mas atras";
+				//$_GET["changeDir"]=$dirBase;
+			}
+		
+		}
+		else//no estoy en el raiz
+		{
+
+			if($_GET["changeDir"]=='..' )//intento bajar
+			{
+				$dirs[]=explode('/', $dirActual);
+			
+				
+			}
+		}
+		
+	
 	}
+
 	// else
 	// 	$dirActual="docs";
  ?>
  <?php /*script borrar elmento*/
-if(isset($_GET["borrar"]))
-{
-	$borrar=$_GET["borrar"];
-	$ruta="img/$borrar";//FIXME
-	if(is_file($ruta))
-	{//si el fichero existe, 
-		if(!unlink($ruta))
-		{//lo intenta BORRAR
-			echo "No se ha  podido borrar";//si falla muestra aviso
+	if(isset($_GET["borrar"]))
+	{
+		$borrar=$_GET["borrar"];
+		$ruta="$borrar";//FIXME
+		if(is_file($ruta))
+		{//si el fichero existe, 
+			
+			if(!unlink($ruta))
+			{//lo intenta BORRAR
+				echo "No se ha  podido borrar";//si falla muestra aviso
+			}
+			else
+			{
+				echo "archivo borrado";
+				
+			}
 		}
-	}
+		else
+		{
+			echo "fichero no encontrado";
+		}
 
-}
+	}
  ?>
  <?php /*script de subir*/
 	if (isset($_POST["subir"]))
